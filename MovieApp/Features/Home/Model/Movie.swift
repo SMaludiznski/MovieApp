@@ -9,7 +9,7 @@ import Foundation
 
 struct Movie: Decodable {
     let id: Int
-    let poster: String
+    let poster: String?
     let title: String
     let rating: Double
     

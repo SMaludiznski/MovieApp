@@ -14,8 +14,6 @@ final class MovieDetailViewController: UIViewController {
     
     private var monvieId: String = ""
     
-    private lazy var spinner: LoadingSpinner = LoadingSpinner(style: .medium)
-    
     private lazy var mainStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -81,13 +79,11 @@ final class MovieDetailViewController: UIViewController {
     }
 
     private func setupView() {
-        navigationController?.navigationBar.topItem?.title = " "
         navigationController?.navigationBar.tintColor = .systemYellow
         view.backgroundColor = .white
         
         view.addSubview(mainStackView)
         view.addSubview(backgroundMovieImage)
-        view.addSubview(spinner)
         
         mainStackView.addArrangedSubview(movieTitleLabel)
         mainStackView.addArrangedSubview(genresLabel)
@@ -96,7 +92,7 @@ final class MovieDetailViewController: UIViewController {
         movieDetailStack.addArrangedSubview(durationLabel)
         movieDetailStack.addArrangedSubview(relaseLabel)
         movieDetailStack.addArrangedSubview(ratingLabel)
-        movieDetailStack.addArrangedSubview(UIView())
+        //movieDetailStack.addArrangedSubview(UIView())
         
         mainStackView.addArrangedSubview(overviewLabel)
         
@@ -114,9 +110,6 @@ final class MovieDetailViewController: UIViewController {
             backgroundMovieImage.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             backgroundMovieImage.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             backgroundMovieImage.heightAnchor.constraint(equalToConstant: 300),
-            
-            spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             
             mainStackView.topAnchor.constraint(equalTo: backgroundMovieImage.bottomAnchor, constant: 20),
             mainStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
@@ -140,7 +133,6 @@ final class MovieDetailViewController: UIViewController {
     }
     
     private func downloadMovie() {
-        startLoading()
         let url = "https://api.themoviedb.org/3/movie/\(monvieId)" + Constants.apiKey
         
         networkManager.downloadData(from: url) { [weak self] (completion) in
@@ -175,27 +167,39 @@ final class MovieDetailViewController: UIViewController {
                 self?.genresLabel.text = self?.generateGenres(genres)
             }
             
-            if let runtime = movie.runtime {
-                if let time = self?.minutesToHoursAndMinutes(runtime) {
+            if movie.runtime != nil {
+                guard let runtime = movie.runtime else {
+                    return
+                }
+                
+                if let time = self?.minutesToHoursAndMinutes(runtime), runtime != 0 {
                     let duration = "\(time.hours)h \(time.leftMinutes)min"
                     self?.durationLabel.configureLabelWith(value: duration, name: "Duration")
+                } else {
+                    self?.durationLabel.removeFromSuperview()
                 }
             }
             
             self?.relaseLabel.configureLabelWith(value: movie.releaseDate, name: "Release")
             
-            let rating =  String(movie.rating)
-            self?.ratingLabel.configureLabelWith(value: rating, name: "Rating")
+            if movie.rating != 0 {
+                let rating = String(movie.rating)
+                self?.ratingLabel.configureLabelWith(value: rating, name: "Rating")
+            }
             
             if let overview = movie.overview {
                 self?.overviewLabel.configureView(with: overview)
             }
-            
+
             self?.adultInfoLabel.configureLabelWith(infoTitle: "Adult", info: movie.adult.description.capitalized)
-            self?.budgetInfoLabel.configureLabelWith(infoTitle: "Budget", info: "\(movie.budget) $")
-            self?.votesLabel.configureLabelWith(infoTitle: "Votes", info: "\(movie.votesCount)")
             
-            self?.stopLoading()
+            if movie.budget != 0 {
+                self?.budgetInfoLabel.configureLabelWith(infoTitle: "Budget", info: "\(movie.budget) $")
+            }
+            
+            if movie.votesCount != 0 {
+                self?.votesLabel.configureLabelWith(infoTitle: "Votes", info: "\(movie.votesCount)")
+            }
         }
     }
     
@@ -215,20 +219,9 @@ final class MovieDetailViewController: UIViewController {
         DispatchQueue.main.async { [weak self] in
             let alertVc = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
             alertVc.addAction(UIAlertAction(title: "Ok", style: .default, handler: { _ in
-                self?.stopLoading()
                 self?.navigationController?.popViewController(animated: true)
             }))
             self?.present(alertVc, animated: true)
         }
-    }
-    
-    private func startLoading() {
-        spinner.startAnimating()
-        mainStackView.isHidden = true
-    }
-    
-    private func stopLoading() {
-        spinner.stopAnimating()
-        mainStackView.isHidden = false
     }
 }

@@ -15,12 +15,13 @@ final class HomeViewController: UIViewController, UISearchBarDelegate {
     private var movies: [Movie] = []
     
     private let collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-
+    
+    private lazy var error: SearchError = SearchError()
+    
     private lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar()
         searchBar.translatesAutoresizingMaskIntoConstraints = false
         searchBar.searchBarStyle = .minimal
-        searchBar.backgroundColor = .clear
         return searchBar
     }()
     
@@ -36,11 +37,12 @@ final class HomeViewController: UIViewController, UISearchBarDelegate {
     
     private func setupView() {
         setupCollectionView()
+        searchBar.delegate = self
         
-        title = "Popular Movies"
+        title = "Movies"
         view.addSubview(searchBar)
         view.addSubview(collectionView)
-
+        
         NSLayoutConstraint.activate([
             searchBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             searchBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
@@ -67,6 +69,7 @@ final class HomeViewController: UIViewController, UISearchBarDelegate {
             switch completion {
             case .success(let data):
                 self?.parseData(from: data)
+                print(data)
             case .failure(let error):
                 self?.show(error)
             }
@@ -99,9 +102,22 @@ final class HomeViewController: UIViewController, UISearchBarDelegate {
         }
     }
     
-    private func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
-        print("Hello world")
+        if let text = searchBar.text {
+            let query = transformStringIntoQuery(text)
+            generateURL(from: query)
+            downloadMovies()
+        }
+    }
+    
+    private func transformStringIntoQuery(_ text: String) -> String {
+        return text.replacingOccurrences(of: " ", with: "-")
+    }
+    
+    private func generateURL(from query: String) {
+        let url = "https://api.themoviedb.org/3/search/movie" + Constants.apiKey + "&query=\(query)"
+        Constants.moviesBaseURL = url
     }
 }
 

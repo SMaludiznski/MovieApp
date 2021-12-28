@@ -11,8 +11,6 @@ final class MovieCell: UICollectionViewCell {
     
     static let identifier = "MovieCell"
     
-    private var movie: Movie = .new
-    
     private lazy var movieImage = StandardImageView(image: nil)
     
     private lazy var ratingLabel: UILabel = {
@@ -54,8 +52,12 @@ final class MovieCell: UICollectionViewCell {
     }
     
     func configureCell(with movie: Movie) {
-        self.movie = movie
-        self.ratingLabel.text = String(movie.rating)
-        movieImage.configureImage(with: movie.poster)
+        if let poster = movie.poster {
+            
+            if movie.rating != 0 {
+                self.ratingLabel.text = String(movie.rating)
+            }
+            movieImage.configureImage(with: poster)
+        }
     }
 }
