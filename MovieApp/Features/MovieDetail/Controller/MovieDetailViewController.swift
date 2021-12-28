@@ -92,7 +92,7 @@ final class MovieDetailViewController: UIViewController {
         movieDetailStack.addArrangedSubview(durationLabel)
         movieDetailStack.addArrangedSubview(relaseLabel)
         movieDetailStack.addArrangedSubview(ratingLabel)
-        //movieDetailStack.addArrangedSubview(UIView())
+        movieDetailStack.addArrangedSubview(UIView())
         
         mainStackView.addArrangedSubview(overviewLabel)
         
@@ -161,6 +161,8 @@ final class MovieDetailViewController: UIViewController {
             
             if let background = movie.background {
                 self?.backgroundMovieImage.configureImage(with: background)
+            } else {
+                self?.backgroundMovieImage.frame = .zero
             }
             
             if let genres = movie.genres {

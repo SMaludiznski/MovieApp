@@ -69,7 +69,6 @@ final class HomeViewController: UIViewController, UISearchBarDelegate {
             switch completion {
             case .success(let data):
                 self?.parseData(from: data)
-                print(data)
             case .failure(let error):
                 self?.show(error)
             }
@@ -132,7 +131,8 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
             fatalError()
         }
         
-        cell.configureCell(with: movies[indexPath.row])
+        let movie = movies[indexPath.row]
+        cell.configureCell(with: movie)
         
         return cell
     }

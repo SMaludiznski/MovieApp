@@ -14,14 +14,6 @@ protocol NetworkManagerProtocol {
 
 final class NetworkManager: NetworkManagerProtocol {
     
-    init() {
-        print("Init")
-    }
-    
-    deinit {
-        print("deinit")
-    }
-    
     func downloadData(from url: String, completionHandler: @escaping (Result<Data, Error>) -> ()) {
         
         guard let url = URL(string: url) else {
