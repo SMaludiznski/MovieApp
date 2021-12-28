@@ -68,7 +68,7 @@ final class HomeViewController: UIViewController, UISearchBarDelegate {
             case .success(let data):
                 self?.parseData(from: data)
             case .failure(let error):
-                print(error.localizedDescription)
+                self?.show(error)
             }
         }
     }
@@ -78,7 +78,7 @@ final class HomeViewController: UIViewController, UISearchBarDelegate {
             let decodedData = try parseDataManager.parseData(from: data, expecting: MoviesResponse.self)
             reloadView(with: decodedData.results)
         } catch {
-            print(error.localizedDescription)
+            show(error)
         }
     }
     
@@ -89,7 +89,17 @@ final class HomeViewController: UIViewController, UISearchBarDelegate {
         }
     }
     
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+    private func show(_ error: Error) {
+        DispatchQueue.main.async { [weak self] in
+            let alertVc = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
+            alertVc.addAction(UIAlertAction(title: "Ok", style: .default, handler: { _ in
+                self?.downloadMovies()
+            }))
+            self?.present(alertVc, animated: true)
+        }
+    }
+    
+    private func searchBarSearchButtonClicked(searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
         print("Hello world")
     }

@@ -16,7 +16,6 @@
 		B8C8686A2770F158003AF010 /* NetworkingErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8C868692770F158003AF010 /* NetworkingErrors.swift */; };
 		B8C8686D2770F170003AF010 /* ParseDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8C8686C2770F170003AF010 /* ParseDataManager.swift */; };
 		B8C8686F2770F184003AF010 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8C8686E2770F184003AF010 /* NetworkManager.swift */; };
-		B8C868712770F1BC003AF010 /* ApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8C868702770F1BC003AF010 /* ApiService.swift */; };
 		B8C868742770F201003AF010 /* ImagesCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8C868732770F201003AF010 /* ImagesCache.swift */; };
 		B8C8687B2770F30B003AF010 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8C8687A2770F30B003AF010 /* HomeViewController.swift */; };
 		B8C8687D2770F737003AF010 /* MoviesResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8C8687C2770F737003AF010 /* MoviesResponse.swift */; };
@@ -45,7 +44,6 @@
 		B8C868692770F158003AF010 /* NetworkingErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkingErrors.swift; sourceTree = "<group>"; };
 		B8C8686C2770F170003AF010 /* ParseDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseDataManager.swift; sourceTree = "<group>"; };
 		B8C8686E2770F184003AF010 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
-		B8C868702770F1BC003AF010 /* ApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiService.swift; sourceTree = "<group>"; };
 		B8C868732770F201003AF010 /* ImagesCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesCache.swift; sourceTree = "<group>"; };
 		B8C8687A2770F30B003AF010 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		B8C8687C2770F737003AF010 /* MoviesResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesResponse.swift; sourceTree = "<group>"; };
@@ -162,7 +160,6 @@
 				B8C8686E2770F184003AF010 /* NetworkManager.swift */,
 				B8C8686C2770F170003AF010 /* ParseDataManager.swift */,
 				B8C868692770F158003AF010 /* NetworkingErrors.swift */,
-				B8C868702770F1BC003AF010 /* ApiService.swift */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -327,7 +324,6 @@
 				B8C8688C27710E18003AF010 /* Genre.swift in Sources */,
 				B8C8686A2770F158003AF010 /* NetworkingErrors.swift in Sources */,
 				B8C8687D2770F737003AF010 /* MoviesResponse.swift in Sources */,
-				B8C868712770F1BC003AF010 /* ApiService.swift in Sources */,
 				B8C8687F2770F878003AF010 /* Movie.swift in Sources */,
 				B83DA035277ADC5A002C4B3F /* InfoLabel.swift in Sources */,
 				B8C8689227711857003AF010 /* MoviesCache.swift in Sources */,
