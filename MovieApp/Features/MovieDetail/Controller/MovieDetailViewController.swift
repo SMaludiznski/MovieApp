@@ -14,6 +14,8 @@ final class MovieDetailViewController: UIViewController {
     
     private var monvieId: String = ""
     
+    private lazy var spinner: LoadingSpinner = LoadingSpinner(style: .medium)
+    
     private lazy var mainStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -85,6 +87,8 @@ final class MovieDetailViewController: UIViewController {
         
         view.addSubview(mainStackView)
         view.addSubview(backgroundMovieImage)
+        view.addSubview(spinner)
+        
         mainStackView.addArrangedSubview(movieTitleLabel)
         mainStackView.addArrangedSubview(genresLabel)
         mainStackView.addArrangedSubview(movieDetailStack)
@@ -111,11 +115,13 @@ final class MovieDetailViewController: UIViewController {
             backgroundMovieImage.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             backgroundMovieImage.heightAnchor.constraint(equalToConstant: 300),
             
+            spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            
             mainStackView.topAnchor.constraint(equalTo: backgroundMovieImage.bottomAnchor, constant: 20),
             mainStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             mainStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
             mainStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            
         ])
     }
     
@@ -134,13 +140,15 @@ final class MovieDetailViewController: UIViewController {
     }
     
     private func downloadMovie() {
+        startLoading()
         let url = "https://api.themoviedb.org/3/movie/\(monvieId)" + Constants.apiKey
+        
         networkManager.downloadData(from: url) { [weak self] (completion) in
             switch completion {
             case .success(let data):
                 self?.parseData(from: data)
             case .failure(let error):
-                print(error.localizedDescription)
+                self?.show(error)
             }
         }
     }
@@ -151,7 +159,7 @@ final class MovieDetailViewController: UIViewController {
             MoviesCache.shared.cacheMovie(name: monvieId, movie: decodedData)
             reloadView(with: decodedData)
         } catch {
-            print(error.localizedDescription)
+            show(error)
         }
     }
     
@@ -186,6 +194,8 @@ final class MovieDetailViewController: UIViewController {
             self?.adultInfoLabel.configureLabelWith(infoTitle: "Adult", info: movie.adult.description.capitalized)
             self?.budgetInfoLabel.configureLabelWith(infoTitle: "Budget", info: "\(movie.budget) $")
             self?.votesLabel.configureLabelWith(infoTitle: "Votes", info: "\(movie.votesCount)")
+            
+            self?.stopLoading()
         }
     }
     
@@ -199,5 +209,26 @@ final class MovieDetailViewController: UIViewController {
     
     private func minutesToHoursAndMinutes (_ minutes : Int) -> (hours : Int , leftMinutes : Int) {
         return (minutes / 60, (minutes % 60))
+    }
+    
+    private func show(_ error: Error) {
+        DispatchQueue.main.async { [weak self] in
+            let alertVc = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
+            alertVc.addAction(UIAlertAction(title: "Ok", style: .default, handler: { _ in
+                self?.stopLoading()
+                self?.navigationController?.popViewController(animated: true)
+            }))
+            self?.present(alertVc, animated: true)
+        }
+    }
+    
+    private func startLoading() {
+        spinner.startAnimating()
+        mainStackView.isHidden = true
+    }
+    
+    private func stopLoading() {
+        spinner.stopAnimating()
+        mainStackView.isHidden = false
     }
 }
